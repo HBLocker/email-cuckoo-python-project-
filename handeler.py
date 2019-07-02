@@ -126,5 +126,60 @@ def file_content(M):
                             cuckoo_submission() #goes to func where it is handeled correctly 
                             return
                         
-                    
+                    #eats the main body of the email 
+            if part.get_get_content_type() == "text/plain":
+                        log info("makes body of the email readable")
+                        body = part.get_payload(Decode=True)
+                        #file hashes 
+                        md5 = re.search(r'\b[0-9a-fA-F]{32}\b', body)
+			    # Regular Expression to select the 40 character long hexadecimal string (sha-1 Hash)
+			            sha1 = re.search(r'\b[0-9a-fA-F]{40}\b', body)
+			            # Regular Expression to select the 64 character long hexadecimal string (sha-256 Hash)
+			            sha256 = re.search(r'\b[0-9a-fA-F]{64}\b', body)
+			# Regular Expression to select the 128 character long hexadecimal string (sha-512 Hash)
+			            sha512 = re.search(r'\b[0-9a-fA-F]{128}\b', body)
+			# A regular expression to get any URL help within the body of the email
+			            url = re.search('(?<!<)http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', body)
+		            	if md5 is not None:
+				                log.info("MD5 hash contained within the email")
+			                   	md5 = md5.group(0)
+			                	monitor.info("MD5 submitted: %s", md5)
+				                get_hash_report()
+	                			return
+	                 	elif sha1 is not None:
+				                log.info("MD5 hash contained within the email")
+			                   	sha1 = sha1.group(0)
+			                	monitor.info("sha1 submitted: %s", sha1)
+				                get_hash_report()
+	                			return
+						
+			            elif sha256 is not None:
+				                log.info("MD5 hash contained within the email")
+			                   	sha256 = sha256.group(0)
+			                	monitor.info("MD5 submitted: %s", sha256)
+				                get_hash_report()
+	                			return
+			 	        elif url is not None:
+				                log.info("MD5 hash contained within the email")
+			                   	md5 = md5.group(0)
+			                	monitor.info("MD5 submitted: %s", md5)
+				                get_hash_report()
+	                			return
+			else:
+	            	log.info("No hash, URL or attachment contained within the email")
+	            	send_no_content()
+		            
+		  
+	def get_hash_report():
+	    
+	    global md5
+	    global sha1
+	    global sha256
+	    global sha512
+	    global reportLocation
+    	global sqlite_file
+    	
+	
+            
+
    
