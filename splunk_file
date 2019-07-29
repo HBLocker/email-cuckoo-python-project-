@@ -1,6 +1,1 @@
-index=* (EventCode=4624 OR EventCode=4625) 
-  | bin _time span=25m as minute 
-  | stats count(Keywords) as Attempts, count(eval(match(Keywords,"Audit Failure"))) as Failed,
-       count(eval(match(Keywords,"Audit Success"))) as Success by minute Account_Name 
-  | where Attempts>=10 AND Failed>=2 AND Success>0
-  | eval minute=strftime(minute,"%H:%M")
+index=* NOT "NTCMRAS03$" NOT "NTCMCAS02$"  NOT "NTCMCAS01$"  NOT "AS04064"(EventCode=4624 OR EventCode=4625) | bin _time span=5M as minute | stats count(Keywords) as Attempts, count(eval(match(Keywords,"Audit Failure"))) as Failed, count(eval(match(Keywords,"Audit Success"))) as Success by minute Account_Name | where Attempts>=3 AND Failed>=3 AND Success =0  | eval minute=strftime(minute,"%H:%M:%B%D")
